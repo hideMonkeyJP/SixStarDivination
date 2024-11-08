@@ -1,0 +1,373 @@
+---
+interface Props {
+  fortuneStar: string;
+  sign: '陽' | '陰';
+  currentCycle: string;
+}
+
+const { fortuneStar, sign, currentCycle } = Astro.props;
+---
+
+<div class="advice-section">
+  <button 
+    id="getAdviceBtn" 
+    data-fortune-star={fortuneStar} 
+    data-sign={sign} 
+    data-current-cycle={currentCycle}
+    class="advice-button"
+  >
+    <div class="button-content">
+      <div class="crystal-ball">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" fill="currentColor"/>
+          <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" fill="currentColor"/>
+        </svg>
+      </div>
+      <span class="button-text">詳細なアドバイスを表示</span>
+    </div>
+  </button>
+
+  <dialog id="adviceDialog" class="advice-dialog">
+    <div class="dialog-container">
+      <div class="dialog-header" id="dialogHeader">
+        <h3>パーソナライズされたアドバイス</h3>
+        <button class="close-button" aria-label="閉じる">×</button>
+      </div>
+      <div id="adviceText" class="dialog-content">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>アドバイスを取得中...</p>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<style>
+  .advice-section {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .advice-button {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    border: none;
+    border-radius: 1rem;
+    color: white;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 1.25rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .advice-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(74, 20, 140, 0.3);
+  }
+
+  .button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .crystal-ball {
+    width: 24px;
+    height: 24px;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .button-text {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .advice-dialog {
+    border: none;
+    border-radius: 1.5rem;
+    padding: 0;
+    max-width: 90%;
+    width: 600px;
+    background: white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    position: fixed;
+  }
+
+  .advice-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .dialog-container {
+    padding: 2rem;
+  }
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-accent);
+    cursor: move;
+  }
+
+  .dialog-header h3 {
+    margin: 0;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    padding: 0.5rem;
+    transition: color 0.3s ease;
+    line-height: 1;
+  }
+
+  .close-button:hover {
+    color: #000;
+  }
+
+  .dialog-content {
+    line-height: 1.8;
+    color: var(--color-text);
+    font-size: 1.1rem;
+  }
+
+  .dialog-content .advice-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .dialog-content .advice-section {
+    background: #f8f9fa;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .dialog-content h4 {
+    color: var(--color-primary);
+    margin: 0 0 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .dialog-content .section-icon {
+    font-size: 1.4rem;
+  }
+
+  .dialog-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .dialog-content li {
+    padding: 0.75rem 0 0.75rem 1.5rem;
+    position: relative;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .dialog-content li:last-child {
+    border-bottom: none;
+  }
+
+  .dialog-content li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--color-secondary);
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--color-accent);
+    border-top: 4px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  .error-message {
+    text-align: center;
+    padding: 2rem;
+    color: #dc3545;
+  }
+
+  .error-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes glow {
+    from {
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+    }
+    to {
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .advice-button {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+    }
+
+    .dialog-container {
+      padding: 1.5rem;
+    }
+
+    .dialog-header h3 {
+      font-size: 1.3rem;
+    }
+
+    .dialog-content {
+      font-size: 1rem;
+    }
+
+    .dialog-content .advice-section {
+      padding: 1rem;
+    }
+
+    .dialog-content h4 {
+      font-size: 1.1rem;
+    }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('getAdviceBtn');
+  const dialog = document.getElementById('adviceDialog') as HTMLDialogElement;
+  const closeBtn = dialog?.querySelector('.close-button');
+  const adviceText = document.getElementById('adviceText');
+  const dialogHeader = document.getElementById('dialogHeader');
+
+  let isDragging = false;
+  let currentX: number;
+  let currentY: number;
+  let initialX: number;
+  let initialY: number;
+  let xOffset = 0;
+  let yOffset = 0;
+
+  if (dialogHeader) {
+    dialogHeader.addEventListener('mousedown', dragStart);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', dragEnd);
+  }
+
+  function dragStart(e: MouseEvent) {
+    initialX = e.clientX - xOffset;
+    initialY = e.clientY - yOffset;
+
+    if (e.target === dialogHeader) {
+      isDragging = true;
+    }
+  }
+
+  function drag(e: MouseEvent) {
+    if (isDragging && dialog) {
+      e.preventDefault();
+
+      currentX = e.clientX - initialX;
+      currentY = e.clientY - initialY;
+
+      xOffset = currentX;
+      yOffset = currentY;
+
+      setTranslate(currentX, currentY, dialog);
+    }
+  }
+
+  function setTranslate(xPos: number, yPos: number, el: HTMLElement) {
+    el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+  }
+
+  function dragEnd() {
+    isDragging = false;
+  }
+
+  if (btn && dialog && closeBtn && adviceText) {
+    btn.addEventListener('click', async () => {
+      try {
+        dialog.showModal();
+        adviceText.innerHTML = `
+          <div class="loading">
+            <div class="spinner"></div>
+            <p>アドバイスを取得中...</p>
+          </div>
+        `;
+
+        const { getDetailedAdvice } = await import('../utils/gemini');
+        const fortuneStar = btn.dataset.fortuneStar;
+        const sign = btn.dataset.sign as '陽' | '陰';
+        const currentCycle = btn.dataset.currentCycle;
+
+        if (fortuneStar && sign && currentCycle) {
+          const advice = await getDetailedAdvice(fortuneStar, sign, currentCycle);
+          adviceText.innerHTML = advice;
+        }
+      } catch (error) {
+        console.error('Error getting advice:', error);
+        adviceText.innerHTML = `
+          <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <p>アドバイスの取得中にエラーが発生しました。<br>しばらく経ってから再度お試しください。</p>
+          </div>
+        `;
+      }
+    });
+
+    closeBtn.addEventListener('click', () => {
+      dialog.close();
+      xOffset = 0;
+      yOffset = 0;
+      dialog.style.transform = 'translate3d(0px, 0px, 0)';
+    });
+
+    dialog.addEventListener('click', (e) => {
+      const rect = dialog.getBoundingClientRect();
+      const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+                      rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+      if (!isInDialog) {
+        dialog.close();
+        xOffset = 0;
+        yOffset = 0;
+        dialog.style.transform = 'translate3d(0px, 0px, 0)';
+      }
+    });
+  }
+</script>

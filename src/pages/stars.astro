@@ -1,0 +1,223 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { DESTINY_STARS } from '../utils/rokusei';
+
+const starDetails = {
+  "土星": {
+    element: "土",
+    traits: ["堅実", "責任感", "忍耐力"],
+    strengths: ["計画性", "実行力", "安定性"],
+    career: ["管理職", "公務員", "建築家"],
+    relationships: "信頼関係を大切にし、長期的な絆を築く傾向があります。",
+    advice: "計画的に物事を進め、基礎を固めることを意識しましょう。"
+  },
+  "金星": {
+    element: "金",
+    traits: ["芸術的", "社交的", "優美"],
+    strengths: ["創造力", "人間関係", "美的センス"],
+    career: ["アーティスト", "デザイナー", "接客業"],
+    relationships: "人を魅了する力があり、良好な人間関係を築きやすいです。",
+    advice: "感性を大切にし、創造的な活動に力を入れましょう。"
+  },
+  "火星": {
+    element: "火",
+    traits: ["情熱的", "行動的", "リーダーシップ"],
+    strengths: ["決断力", "実行力", "独立心"],
+    career: ["起業家", "営業職", "スポーツ選手"],
+    relationships: "率直なコミュニケーションで、強い絆を築きます。",
+    advice: "エネルギーを建設的な方向に向けることを心がけましょう。"
+  },
+  "天王星": {
+    element: "天",
+    traits: ["独創的", "革新的", "直感力"],
+    strengths: ["創造性", "先見性", "適応力"],
+    career: ["研究者", "発明家", "コンサルタント"],
+    relationships: "独自の価値観を持ち、深い理解で関係を築きます。",
+    advice: "独創性を活かしつつ、現実とのバランスを保ちましょう。"
+  },
+  "木星": {
+    element: "木",
+    traits: ["寛容", "博愛的", "成長"],
+    strengths: ["包容力", "指導力", "発展性"],
+    career: ["教育者", "カウンセラー", "経営者"],
+    relationships: "広い心で人を受け入れ、良好な関係を築きます。",
+    advice: "大きな視野を持ちつつ、細部にも注意を払いましょう。"
+  },
+  "水星": {
+    element: "水",
+    traits: ["知的", "適応力", "コミュニケーション"],
+    strengths: ["分析力", "表現力", "柔軟性"],
+    career: ["作家", "ジャーナリスト", "通訳"],
+    relationships: "知的な交流を通じて、深い絆を築きます。",
+    advice: "知識を実践に活かし、周囲との調和を図りましょう。"
+  }
+};
+---
+
+<Layout title="運命星の特徴 | 六星占術">
+	<div class="container">
+		<h1 class="page-title">運命星の特徴</h1>
+		
+		<div class="stars-grid">
+			{Object.entries(starDetails).map(([star, details]) => (
+				<div class="star-card">
+					<div class="star-header">
+						<h2 class="star-title">{star}人</h2>
+						<span class="element-badge">{details.element}の気質</span>
+					</div>
+
+					<div class="traits-section">
+						<h3>主な性質</h3>
+						<ul class="traits-list">
+							{details.traits.map(trait => (
+								<li>{trait}</li>
+							))}
+						</ul>
+					</div>
+
+					<div class="strengths-section">
+						<h3>強み</h3>
+						<ul class="strengths-list">
+							{details.strengths.map(strength => (
+								<li>{strength}</li>
+							))}
+						</ul>
+					</div>
+
+					<div class="career-section">
+						<h3>適性のある職業</h3>
+						<ul class="career-list">
+							{details.career.map(job => (
+								<li>{job}</li>
+							))}
+						</ul>
+					</div>
+
+					<div class="relationships-section">
+						<h3>人間関係</h3>
+						<p>{details.relationships}</p>
+					</div>
+
+					<div class="advice-section">
+						<h3>アドバイス</h3>
+						<p>{details.advice}</p>
+					</div>
+				</div>
+			))}
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.container {
+		max-width: var(--max-width);
+		margin: 0 auto;
+		padding: 2rem 1rem;
+	}
+
+	.page-title {
+		font-size: 2.5rem;
+		color: var(--color-primary);
+		text-align: center;
+		margin-bottom: 3rem;
+	}
+
+	.stars-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 2rem;
+	}
+
+	.star-card {
+		background: var(--color-white);
+		border-radius: 1rem;
+		padding: 2rem;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	.star-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1.5rem;
+		padding-bottom: 1rem;
+		border-bottom: 2px solid var(--color-accent);
+	}
+
+	.star-title {
+		font-size: 1.8rem;
+		color: var(--color-primary);
+		margin: 0;
+	}
+
+	.element-badge {
+		background: var(--color-secondary);
+		color: var(--color-white);
+		padding: 0.5rem 1rem;
+		border-radius: 2rem;
+		font-size: 0.9rem;
+	}
+
+	.traits-section,
+	.strengths-section,
+	.career-section,
+	.relationships-section,
+	.advice-section {
+		margin-bottom: 1.5rem;
+	}
+
+	h3 {
+		color: var(--color-secondary);
+		font-size: 1.2rem;
+		margin-bottom: 0.8rem;
+	}
+
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.traits-list li,
+	.strengths-list li,
+	.career-list li {
+		padding: 0.5rem 0;
+		border-bottom: 1px solid var(--color-accent);
+		position: relative;
+		padding-left: 1.5rem;
+	}
+
+	.traits-list li::before,
+	.strengths-list li::before,
+	.career-list li::before {
+		content: "•";
+		position: absolute;
+		left: 0;
+		color: var(--color-secondary);
+	}
+
+	p {
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	@media (max-width: 768px) {
+		.page-title {
+			font-size: 2rem;
+		}
+
+		.star-card {
+			padding: 1.5rem;
+		}
+
+		.star-header {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 1rem;
+		}
+
+		.star-title {
+			font-size: 1.5rem;
+		}
+	}
+</style>

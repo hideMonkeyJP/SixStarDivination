@@ -1,0 +1,659 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { 
+  calculateBaseNumber,
+  calculateFortuneNumber,
+  determineDestinyStar,
+  determineSign,
+  DESTINY_STARS,
+  calculateCurrentCycle,
+  getStarCharacteristics,
+  getCycleDescription
+} from '../utils/rokusei';
+---
+
+<Layout title="六星占術で運命星と運気周期を知る">
+	<div class="container">
+		<section class="hero">
+			<h1 class="hero-title">あなたの運命星を知る</h1>
+			<p class="hero-subtitle">生年月日から運命星と運気周期を占います</p>
+		</section>
+
+		<section class="fortune-form">
+			<h2 class="section-title">生年月日を入力</h2>
+			<form id="birthdateForm" class="form">
+				<div class="form-group">
+					<label for="year">年（西暦）</label>
+					<select id="year" name="year" required class="select">
+						{Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i).map(year => (
+							<option value={year}>{year}</option>
+						))}
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label for="month">月</label>
+					<select id="month" name="month" required class="select">
+						{Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
+							<option value={month}>{month}</option>
+						))}
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label for="day">日</label>
+					<select id="day" name="day" required class="select">
+						{Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
+							<option value={day}>{day}</option>
+						))}
+					</select>
+				</div>
+
+				<button type="submit" class="submit-button">占う</button>
+			</form>
+		</section>
+
+		<div id="result" class="result hidden">
+			<div class="result-card">
+				<div class="result-header">
+					<h2 class="result-title">鑑定結果</h2>
+				</div>
+
+				<div class="destiny-star-section">
+					<div class="star-circle">
+						<div id="destinyStarDisplay" class="star-text"></div>
+						<div id="signDisplay" class="sign-text"></div>
+					</div>
+				</div>
+
+				<div class="characteristics-section">
+					<h3>性格・特徴</h3>
+					<div id="characteristicsDisplay" class="characteristics-text"></div>
+				</div>
+
+				<div class="cycle-section">
+					<h3>現在の運気周期</h3>
+					<div class="cycle-info">
+						<div id="cycleDisplay" class="cycle-name"></div>
+						<div id="cycleDescDisplay" class="cycle-description"></div>
+					</div>
+				</div>
+
+				<div class="advice-section">
+					<button id="getAdviceBtn" class="advice-button">
+						<div class="button-content">
+							<div class="crystal-ball">
+								<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" fill="currentColor"/>
+									<path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" fill="currentColor"/>
+								</svg>
+							</div>
+							<span class="button-text">詳細なアドバイスを表示</span>
+						</div>
+					</button>
+				</div>
+			</div>
+
+			<dialog id="adviceDialog" class="advice-dialog">
+				<div class="dialog-container">
+					<div class="dialog-header" id="dialogHeader">
+						<h3>パーソナライズされたアドバイス</h3>
+						<button class="close-button" aria-label="閉じる">×</button>
+					</div>
+					<div id="adviceText" class="dialog-content">
+						<div class="loading">
+							<div class="spinner"></div>
+							<p>アドバイスを取得中...</p>
+						</div>
+					</div>
+				</div>
+			</dialog>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.container {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 2rem 1rem;
+	}
+
+	.hero {
+		text-align: center;
+		margin-bottom: 3rem;
+		padding: 3rem 0;
+		background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+		color: var(--color-white);
+		border-radius: 1rem;
+	}
+
+	.hero-title {
+		font-size: 2.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.hero-subtitle {
+		font-size: 1.2rem;
+		opacity: 0.9;
+	}
+
+	.section-title {
+		font-size: 1.5rem;
+		margin-bottom: 2rem;
+		text-align: center;
+		color: var(--color-primary);
+	}
+
+	.fortune-form {
+		background: var(--color-white);
+		padding: 2rem;
+		border-radius: 1rem;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	.form {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+		justify-content: center;
+	}
+
+	.form-group {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.select {
+		padding: 0.5rem;
+		border: 2px solid var(--color-accent);
+		border-radius: 0.5rem;
+		font-size: 1rem;
+		min-width: 100px;
+	}
+
+	.submit-button {
+		width: 100%;
+		padding: 1rem 2rem;
+		background: var(--color-primary);
+		color: var(--color-white);
+		border: none;
+		border-radius: 0.5rem;
+		font-size: 1.2rem;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+		margin-top: 1rem;
+	}
+
+	.submit-button:hover {
+		background: var(--color-secondary);
+	}
+
+	.result {
+		margin-top: 3rem;
+	}
+
+	.result-card {
+		background: var(--color-white);
+		border-radius: 1rem;
+		padding: 2rem;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	.result-header {
+		text-align: center;
+		margin-bottom: 2rem;
+	}
+
+	.result-title {
+		color: var(--color-primary);
+		font-size: 1.8rem;
+		margin: 0;
+	}
+
+	.destiny-star-section {
+		display: flex;
+		justify-content: center;
+		margin-bottom: 2rem;
+	}
+
+	.star-circle {
+		background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+		color: var(--color-white);
+		width: 200px;
+		height: 200px;
+		border-radius: 50%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 8px 32px rgba(74, 20, 140, 0.25);
+	}
+
+	.star-text {
+		font-size: 2rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
+	}
+
+	.sign-text {
+		font-size: 1.5rem;
+	}
+
+	.characteristics-section,
+	.cycle-section {
+		background: var(--color-accent);
+		padding: 1.5rem;
+		border-radius: 0.5rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.characteristics-section h3,
+	.cycle-section h3 {
+		color: var(--color-primary);
+		margin-bottom: 1rem;
+		font-size: 1.3rem;
+	}
+
+	.cycle-info {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.cycle-name {
+		font-size: 1.2rem;
+		font-weight: 700;
+		color: var(--color-secondary);
+	}
+
+	.advice-section {
+		text-align: center;
+		margin-top: 2rem;
+	}
+
+	.advice-button {
+		background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+		border: none;
+		border-radius: 1rem;
+		color: white;
+		cursor: pointer;
+		font-size: 1.1rem;
+		padding: 1.25rem 2.5rem;
+		position: relative;
+		overflow: hidden;
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
+		width: 100%;
+		max-width: 400px;
+	}
+
+	.advice-button:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 8px 30px rgba(74, 20, 140, 0.3);
+	}
+
+	.button-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+	}
+
+	.crystal-ball {
+		width: 24px;
+		height: 24px;
+		animation: glow 2s ease-in-out infinite alternate;
+	}
+
+	.button-text {
+		font-weight: 500;
+		letter-spacing: 0.5px;
+	}
+
+	.advice-dialog {
+		border: none;
+		border-radius: 1.5rem;
+		padding: 0;
+		max-width: 90%;
+		width: 600px;
+		background: white;
+		box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+		position: fixed;
+	}
+
+	.advice-dialog::backdrop {
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(4px);
+	}
+
+	.dialog-container {
+		padding: 2rem;
+		position: relative;
+	}
+
+	.dialog-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2rem;
+		padding-bottom: 1rem;
+		border-bottom: 2px solid var(--color-accent);
+		cursor: move;
+	}
+
+	.dialog-header h3 {
+		margin: 0;
+		color: var(--color-primary);
+		font-size: 1.5rem;
+		font-weight: 700;
+	}
+
+	.close-button {
+		background: none;
+		border: none;
+		font-size: 1.5rem;
+		cursor: pointer;
+		color: #666;
+		padding: 0.5rem;
+		transition: color 0.3s ease;
+		line-height: 1;
+	}
+
+	.close-button:hover {
+		color: #000;
+	}
+
+	.dialog-content {
+		line-height: 1.8;
+		color: var(--color-text);
+		font-size: 1.1rem;
+	}
+
+	.dialog-content .advice-content {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.dialog-content .advice-section {
+		background: #f8f9fa;
+		border-radius: 1rem;
+		padding: 1.5rem;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	}
+
+	.dialog-content h4 {
+		color: var(--color-primary);
+		margin: 0 0 1rem;
+		font-size: 1.2rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.dialog-content .section-icon {
+		font-size: 1.4rem;
+	}
+
+	.dialog-content ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.dialog-content li {
+		padding: 0.75rem 0 0.75rem 1.5rem;
+		position: relative;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+	}
+
+	.dialog-content li:last-child {
+		border-bottom: none;
+	}
+
+	.dialog-content li::before {
+		content: "•";
+		position: absolute;
+		left: 0;
+		color: var(--color-secondary);
+	}
+
+	.loading {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+	}
+
+	.spinner {
+		width: 40px;
+		height: 40px;
+		border: 4px solid var(--color-accent);
+		border-top: 4px solid var(--color-primary);
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+		margin-bottom: 1rem;
+	}
+
+	.error-message {
+		text-align: center;
+		padding: 2rem;
+		color: #dc3545;
+	}
+
+	.error-icon {
+		font-size: 2rem;
+		margin-bottom: 1rem;
+		display: block;
+	}
+
+	@keyframes spin {
+		0% { transform: rotate(0deg); }
+		100% { transform: rotate(360deg); }
+	}
+
+	@keyframes glow {
+		from {
+			filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+		}
+		to {
+			filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+		}
+	}
+
+	.hidden {
+		display: none;
+	}
+
+	@media (max-width: 768px) {
+		.hero-title {
+			font-size: 2rem;
+		}
+
+		.hero-subtitle {
+			font-size: 1rem;
+		}
+
+		.form {
+			flex-direction: column;
+		}
+
+		.select {
+			width: 100%;
+		}
+
+		.star-circle {
+			width: 150px;
+			height: 150px;
+		}
+
+		.star-text {
+			font-size: 1.5rem;
+		}
+
+		.sign-text {
+			font-size: 1.2rem;
+		}
+
+		.dialog-container {
+			padding: 1.5rem;
+		}
+
+		.dialog-header h3 {
+			font-size: 1.3rem;
+		}
+
+		.dialog-content {
+			font-size: 1rem;
+		}
+	}
+</style>
+
+<script>
+	import { 
+		calculateBaseNumber,
+		calculateFortuneNumber,
+		determineDestinyStar,
+		determineSign,
+		DESTINY_STARS,
+		calculateCurrentCycle,
+		getStarCharacteristics,
+		getCycleDescription
+	} from '../utils/rokusei';
+
+	const form = document.getElementById('birthdateForm') as HTMLFormElement;
+	const resultDiv = document.getElementById('result') as HTMLDivElement;
+	const dialog = document.getElementById('adviceDialog') as HTMLDialogElement;
+	const dialogHeader = document.getElementById('dialogHeader');
+	const closeBtn = dialog?.querySelector('.close-button');
+	const adviceText = document.getElementById('adviceText');
+
+	let isDragging = false;
+	let currentX = 0;
+	let currentY = 0;
+	let initialX = 0;
+	let initialY = 0;
+	let xOffset = 0;
+	let yOffset = 0;
+
+	if (dialogHeader) {
+		dialogHeader.addEventListener('mousedown', dragStart);
+		document.addEventListener('mousemove', drag);
+		document.addEventListener('mouseup', dragEnd);
+	}
+
+	function dragStart(e: MouseEvent) {
+		if (dialog && dialogHeader && e.target === dialogHeader) {
+			initialX = e.clientX - xOffset;
+			initialY = e.clientY - yOffset;
+			isDragging = true;
+		}
+	}
+
+	function drag(e: MouseEvent) {
+		if (isDragging && dialog) {
+			e.preventDefault();
+			currentX = e.clientX - initialX;
+			currentY = e.clientY - initialY;
+			xOffset = currentX;
+			yOffset = currentY;
+			dialog.style.transform = `translate(${currentX}px, ${currentY}px)`;
+		}
+	}
+
+	function dragEnd() {
+		isDragging = false;
+	}
+
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		
+		const formData = new FormData(form);
+		const birthYear = parseInt(formData.get('year') as string);
+		const birthMonth = parseInt(formData.get('month') as string);
+		const birthDay = parseInt(formData.get('day') as string);
+
+		// 六星占術の計算
+		const baseNumber = calculateBaseNumber(birthYear);
+		const fortuneNumber = calculateFortuneNumber(birthMonth, birthDay, baseNumber);
+		const starName = determineDestinyStar(fortuneNumber);
+		const sign = determineSign(birthYear);
+		const star = DESTINY_STARS[starName];
+		const currentCycle = calculateCurrentCycle(birthYear, { ...star, sign });
+		const characteristics = getStarCharacteristics(starName, sign);
+		const cycleDesc = getCycleDescription(currentCycle);
+		
+		// 結果の表示
+		resultDiv.classList.remove('hidden');
+		
+		const destinyStarDisplay = document.getElementById('destinyStarDisplay');
+		const signDisplay = document.getElementById('signDisplay');
+		const characteristicsDisplay = document.getElementById('characteristicsDisplay');
+		const cycleDisplay = document.getElementById('cycleDisplay');
+		const cycleDescDisplay = document.getElementById('cycleDescDisplay');
+		const adviceBtn = document.getElementById('getAdviceBtn');
+
+		if (destinyStarDisplay) destinyStarDisplay.textContent = `${starName}人`;
+		if (signDisplay) signDisplay.textContent = sign;
+		if (characteristicsDisplay) characteristicsDisplay.textContent = characteristics;
+		if (cycleDisplay) cycleDisplay.textContent = currentCycle;
+		if (cycleDescDisplay) cycleDescDisplay.textContent = cycleDesc;
+		if (adviceBtn) {
+			adviceBtn.setAttribute('data-fortune-star', starName);
+			adviceBtn.setAttribute('data-sign', sign);
+			adviceBtn.setAttribute('data-current-cycle', currentCycle);
+		}
+
+		// アドバイスボタンのイベントリスナーを設定
+		if (adviceBtn && dialog && closeBtn && adviceText) {
+			adviceBtn.addEventListener('click', async () => {
+				try {
+					dialog.showModal();
+					dialog.style.transform = 'translate(0, 0)';
+					xOffset = 0;
+					yOffset = 0;
+					
+					adviceText.innerHTML = `
+						<div class="loading">
+							<div class="spinner"></div>
+							<p>アドバイスを取得中...</p>
+						</div>
+					`;
+
+					const { getDetailedAdvice } = await import('../utils/gemini');
+					const advice = await getDetailedAdvice(starName, sign, currentCycle);
+					adviceText.innerHTML = advice;
+				} catch (error) {
+					console.error('Error getting advice:', error);
+					adviceText.innerHTML = `
+						<div class="error-message">
+							<span class="error-icon">⚠️</span>
+							<p>アドバイスの取得中にエラーが発生しました。<br>しばらく経ってから再度お試しください。</p>
+						</div>
+					`;
+				}
+			});
+
+			closeBtn.addEventListener('click', () => {
+				dialog.close();
+				dialog.style.transform = 'translate(0, 0)';
+				xOffset = 0;
+				yOffset = 0;
+			});
+
+			dialog.addEventListener('click', (e) => {
+				const rect = dialog.getBoundingClientRect();
+				const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
+								rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+				if (!isInDialog) {
+					dialog.close();
+					dialog.style.transform = 'translate(0, 0)';
+					xOffset = 0;
+					yOffset = 0;
+				}
+			});
+		}
+	});
+</script>

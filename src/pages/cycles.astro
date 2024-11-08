@@ -1,0 +1,303 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { FORTUNE_CYCLES } from '../utils/rokusei';
+
+const cycleDetails = {
+  "種子": {
+    phase: "始まり",
+    description: "新しい始まりの時期です。将来への種まきをする大切な時期となります。",
+    opportunities: ["新しいプロジェクトの開始", "学習の開始", "計画立案"],
+    advice: "長期的な視点で計画を立て、基礎固めに注力しましょう。",
+    caution: "焦って行動を起こすのは避け、じっくりと準備を整えることが大切です。"
+  },
+  "緑生": {
+    phase: "成長",
+    description: "種が芽を出し、成長していく時期です。可能性が広がっていきます。",
+    opportunities: ["スキルアップ", "人脈形成", "自己投資"],
+    advice: "積極的に学び、経験を積むことで、大きく成長できます。",
+    caution: "基礎をおろそかにせず、着実に力をつけていくことが重要です。"
+  },
+  "立花": {
+    phase: "開花",
+    description: "才能が開花し、成果が表れ始める充実した時期です。",
+    opportunities: ["才能の発揮", "成果の実現", "評価の向上"],
+    advice: "自信を持って自分の才能を発揮し、積極的に行動しましょう。",
+    caution: "慢心を避け、さらなる高みを目指して努力を続けることが大切です。"
+  },
+  "健弱": {
+    phase: "小殺界",
+    description: "充実の中にも注意が必要な時期です。健康管理が特に重要です。",
+    opportunities: ["自己管理の見直し", "基盤の強化", "準備期間"],
+    advice: "無理をせず、体調管理を優先することで、次の飛躍に備えましょう。",
+    caution: "過度な負担を避け、必要に応じて休息を取ることが大切です。"
+  },
+  "達成": {
+    phase: "完成",
+    description: "目標が達成され、努力が実を結ぶ充実した時期です。",
+    opportunities: ["目標の達成", "成功体験", "収穫"],
+    advice: "これまでの努力を形にし、さらなる高みを目指しましょう。",
+    caution: "現状に満足せず、次のステージに向けた準備も始めましょう。"
+  },
+  "乱気": {
+    phase: "中殺界",
+    description: "変化や混乱が生じやすい時期です。柔軟な対応が求められます。",
+    opportunities: ["変革のチャンス", "新しい視点の獲得", "脱皮"],
+    advice: "変化を恐れず、むしろチャンスとして活かすことを心がけましょう。",
+    caution: "重要な決断は慎重に行い、安全な選択肢を優先しましょう。"
+  },
+  "再会": {
+    phase: "再生",
+    description: "過去との再会や、新たな出会いがある重要な時期です。",
+    opportunities: ["人との再会", "過去の見直し", "新たな出会い"],
+    advice: "過去の経験を活かしつつ、新しい可能性も探っていきましょう。",
+    caution: "過去にとらわれすぎず、未来への展望も持ちましょう。"
+  },
+  "財成": {
+    phase: "充実",
+    description: "物事が充実し、特に金運の面で恵まれる時期です。",
+    opportunities: ["金運の上昇", "資産形成", "投資"],
+    advice: "将来を見据えた資産運用や投資を検討するのに適しています。",
+    caution: "浪費を避け、計画的な資金管理を心がけましょう。"
+  },
+  "安定": {
+    phase: "安定",
+    description: "全体的に安定した運気で、着実な前進が期待できます。",
+    opportunities: ["基盤の強化", "長期計画の実行", "安定した成長"],
+    advice: "現状を維持しながら、さらなる発展を目指しましょう。",
+    caution: "安定を過信せず、常に向上心を持ち続けることが大切です。"
+  },
+  "陰影": {
+    phase: "大殺界開始",
+    description: "大きな変化の予兆がある時期です。内省が重要になります。",
+    opportunities: ["自己分析", "準備期間", "方向性の見直し"],
+    advice: "無理な行動は避け、じっくりと自己を見つめ直しましょう。",
+    caution: "重要な決断は先送りにし、慎重に行動することが賢明です。"
+  },
+  "停止": {
+    phase: "大殺界最中",
+    description: "運気が停滞する時期です。じっくりと内面を見つめ直しましょう。",
+    opportunities: ["自己改革", "計画の見直し", "休養"],
+    advice: "この時期を自己成長の機会として活用しましょう。",
+    caution: "新しい挑戦は控えめにし、現状維持に努めることが大切です。"
+  },
+  "減退": {
+    phase: "大殺界終了",
+    description: "大殺界の終わりに向かう時期です。次の周期に向けた準備をします。",
+    opportunities: ["総括", "準備", "新たな展望"],
+    advice: "これまでの経験を整理し、次の周期への準備を始めましょう。",
+    caution: "焦らず、着実に次のステージへの準備を進めることが重要です。"
+  }
+};
+---
+
+<Layout title="運気周期 | 六星占術">
+	<div class="container">
+		<h1 class="page-title">運気周期</h1>
+		<p class="page-description">
+			六星占術では、12年周期で運気が変化すると考えます。
+			それぞれの時期には特徴があり、その時期に適した行動や注意点があります。
+		</p>
+
+		<div class="cycle-timeline">
+			{FORTUNE_CYCLES.map((cycle) => (
+				<div class="timeline-point">
+					<div class="point-marker"></div>
+					<div class="point-label">{cycle}</div>
+				</div>
+			))}
+		</div>
+
+		<div class="cycles-grid">
+			{Object.entries(cycleDetails).map(([cycle, details]) => (
+				<div class="cycle-card">
+					<div class="cycle-header">
+						<h2 class="cycle-title">{cycle}の時期</h2>
+						<span class="phase-badge">{details.phase}</span>
+					</div>
+
+					<p class="cycle-description">{details.description}</p>
+
+					<div class="opportunities-section">
+						<h3>この時期のチャンス</h3>
+						<ul>
+							{details.opportunities.map((opportunity) => (
+								<li>{opportunity}</li>
+							))}
+						</ul>
+					</div>
+
+					<div class="advice-section">
+						<h3>アドバイス</h3>
+						<p>{details.advice}</p>
+					</div>
+
+					<div class="caution-section">
+						<h3>注意点</h3>
+						<p>{details.caution}</p>
+					</div>
+				</div>
+			))}
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.container {
+		max-width: var(--max-width);
+		margin: 0 auto;
+		padding: 2rem 1rem;
+	}
+
+	.page-title {
+		font-size: 2.5rem;
+		color: var(--color-primary);
+		text-align: center;
+		margin-bottom: 1rem;
+	}
+
+	.page-description {
+		text-align: center;
+		max-width: 800px;
+		margin: 0 auto 3rem;
+		color: var(--color-text);
+		line-height: 1.6;
+	}
+
+	.cycle-timeline {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin: 3rem 0;
+		padding: 2rem;
+		background: var(--color-white);
+		border-radius: 1rem;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		overflow-x: auto;
+	}
+
+	.timeline-point {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		min-width: 80px;
+	}
+
+	.point-marker {
+		width: 16px;
+		height: 16px;
+		background: var(--color-primary);
+		border-radius: 50%;
+		margin-bottom: 0.5rem;
+	}
+
+	.point-label {
+		font-size: 0.9rem;
+		color: var(--color-text);
+		text-align: center;
+	}
+
+	.cycles-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 2rem;
+		margin-top: 3rem;
+	}
+
+	.cycle-card {
+		background: var(--color-white);
+		border-radius: 1rem;
+		padding: 2rem;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	.cycle-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1.5rem;
+		padding-bottom: 1rem;
+		border-bottom: 2px solid var(--color-accent);
+	}
+
+	.cycle-title {
+		font-size: 1.5rem;
+		color: var(--color-primary);
+		margin: 0;
+	}
+
+	.phase-badge {
+		background: var(--color-secondary);
+		color: var(--color-white);
+		padding: 0.5rem 1rem;
+		border-radius: 2rem;
+		font-size: 0.9rem;
+	}
+
+	.cycle-description {
+		margin-bottom: 1.5rem;
+		line-height: 1.6;
+	}
+
+	.opportunities-section,
+	.advice-section,
+	.caution-section {
+		margin-bottom: 1.5rem;
+	}
+
+	h3 {
+		color: var(--color-secondary);
+		font-size: 1.2rem;
+		margin-bottom: 0.8rem;
+	}
+
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	li {
+		padding: 0.5rem 0;
+		border-bottom: 1px solid var(--color-accent);
+		position: relative;
+		padding-left: 1.5rem;
+	}
+
+	li::before {
+		content: "•";
+		position: absolute;
+		left: 0;
+		color: var(--color-secondary);
+	}
+
+	@media (max-width: 768px) {
+		.page-title {
+			font-size: 2rem;
+		}
+
+		.cycle-timeline {
+			padding: 1rem;
+			margin: 2rem -1rem;
+			width: calc(100% + 2rem);
+			border-radius: 0;
+		}
+
+		.timeline-point {
+			min-width: 60px;
+		}
+
+		.cycle-card {
+			padding: 1.5rem;
+		}
+
+		.cycle-header {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 1rem;
+		}
+
+		.cycle-title {
+			font-size: 1.3rem;
+		}
+	}
+</style>

@@ -1,0 +1,198 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="六星占術とは | 六星占術">
+	<div class="container">
+		<h1 class="page-title">六星占術とは</h1>
+		
+		<section class="content-section">
+			<h2 class="section-title">六星占術の基本</h2>
+			<p>六星占術は、生年月日から「運命星」と「運気周期」を算出し、その人の本質や運命の流れを読み解く占術です。</p>
+			<div class="info-box">
+				<h3>六つの運命星</h3>
+				<ul class="star-list">
+					<li>土星人 - 堅実で着実な性質</li>
+					<li>金星人 - 芸術的で社交的な性質</li>
+					<li>火星人 - 情熱的でエネルギッシュな性質</li>
+					<li>天王星人 - 独創的で革新的な性質</li>
+					<li>木星人 - 寛容で博愛的な性質</li>
+					<li>水星人 - 知的で機転の利く性質</li>
+				</ul>
+			</div>
+		</section>
+
+		<section class="content-section">
+			<h2 class="section-title">陽と陰について</h2>
+			<p>各運命星には「陽」と「陰」の2つの性質があり、生まれた年の西暦が偶数か奇数かで決定されます。</p>
+			<div class="grid">
+				<div class="info-card">
+					<h3>陽の性質</h3>
+					<p>外向的で積極的なエネルギーを持ち、表現力や行動力に優れています。</p>
+				</div>
+				<div class="info-card">
+					<h3>陰の性質</h3>
+					<p>内向的で慎重なエネルギーを持ち、思考力や直感力に優れています。</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="content-section">
+			<h2 class="section-title">運気周期について</h2>
+			<p>六星占術では、12年周期で運気が変化すると考えます。各周期には特徴があり、その時期に適した行動や注意点があります。</p>
+			<div class="cycle-box">
+				<h3>主な運気周期</h3>
+				<div class="cycle-grid">
+					<div class="cycle-item">
+						<h4>種子の時期</h4>
+						<p>新しい始まりの時期</p>
+					</div>
+					<div class="cycle-item">
+						<h4>緑生の時期</h4>
+						<p>成長と発展の時期</p>
+					</div>
+					<div class="cycle-item">
+						<h4>立花の時期</h4>
+						<p>才能が開花する時期</p>
+					</div>
+					<div class="cycle-item">
+						<h4>健弱の時期</h4>
+						<p>充実と注意の時期</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="content-section">
+			<h2 class="section-title">六星占術の特徴</h2>
+			<ul class="feature-list">
+				<li>生年月日のみで占うことができる</li>
+				<li>12年周期の運気の流れを把握できる</li>
+				<li>自分の本質的な性質を理解できる</li>
+				<li>時期に応じた適切な行動指針が得られる</li>
+			</ul>
+		</section>
+	</div>
+</Layout>
+
+<style>
+	.container {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 2rem 1rem;
+	}
+
+	.page-title {
+		font-size: 2.5rem;
+		color: var(--color-primary);
+		text-align: center;
+		margin-bottom: 3rem;
+	}
+
+	.content-section {
+		margin-bottom: 4rem;
+	}
+
+	.section-title {
+		font-size: 1.8rem;
+		color: var(--color-secondary);
+		margin-bottom: 1.5rem;
+		border-bottom: 2px solid var(--color-accent);
+		padding-bottom: 0.5rem;
+	}
+
+	.info-box {
+		background: var(--color-white);
+		padding: 2rem;
+		border-radius: 1rem;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		margin: 1.5rem 0;
+	}
+
+	.star-list {
+		list-style: none;
+		padding: 0;
+		margin: 1rem 0;
+	}
+
+	.star-list li {
+		padding: 0.5rem 0;
+		border-bottom: 1px solid var(--color-accent);
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 2rem;
+		margin: 1.5rem 0;
+	}
+
+	.info-card {
+		background: var(--color-white);
+		padding: 1.5rem;
+		border-radius: 0.5rem;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.info-card h3 {
+		color: var(--color-primary);
+		margin-bottom: 1rem;
+	}
+
+	.cycle-box {
+		background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+		color: var(--color-white);
+		padding: 2rem;
+		border-radius: 1rem;
+		margin: 1.5rem 0;
+	}
+
+	.cycle-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem;
+		margin-top: 1.5rem;
+	}
+
+	.cycle-item {
+		background: rgba(255, 255, 255, 0.1);
+		padding: 1rem;
+		border-radius: 0.5rem;
+	}
+
+	.cycle-item h4 {
+		margin-bottom: 0.5rem;
+	}
+
+	.feature-list {
+		list-style: none;
+		padding: 0;
+	}
+
+	.feature-list li {
+		position: relative;
+		padding: 0.5rem 0 0.5rem 2rem;
+		margin: 0.5rem 0;
+	}
+
+	.feature-list li::before {
+		content: "✨";
+		position: absolute;
+		left: 0;
+		color: var(--color-secondary);
+	}
+
+	@media (max-width: 768px) {
+		.page-title {
+			font-size: 2rem;
+		}
+
+		.grid, .cycle-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.info-card, .cycle-item {
+			margin-bottom: 1rem;
+		}
+	}
+</style>

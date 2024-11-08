@@ -1,0 +1,152 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="六星占術で運命星と運気周期を知る" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<header class="header">
+			<div class="header-content">
+				<h1 class="site-title">六星占術</h1>
+				<nav class="nav">
+					<ul class="nav-list">
+						<li><a href="/" class="nav-link">占い</a></li>
+						<li><a href="/about" class="nav-link">六星占術とは</a></li>
+						<li><a href="/stars" class="nav-link">運命星の特徴</a></li>
+						<li><a href="/cycles" class="nav-link">運気周期</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+		<main>
+			<slot />
+		</main>
+		<footer class="footer">
+			<p class="copyright">© 2024 六星占術</p>
+		</footer>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--color-primary: #4a148c;
+		--color-secondary: #7b1fa2;
+		--color-accent: #e1bee7;
+		--color-text: #333333;
+		--color-background: #f5f5f5;
+		--color-white: #ffffff;
+		--max-width: 1200px;
+		--header-height: 64px;
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	html {
+		font-family: 'Noto Sans JP', sans-serif;
+		background: var(--color-background);
+		color: var(--color-text);
+	}
+
+	body {
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+	}
+
+	main {
+		flex: 1;
+		width: 100%;
+		max-width: var(--max-width);
+		margin: 0 auto;
+		padding: 2rem 1rem;
+	}
+
+	.header {
+		background: var(--color-primary);
+		color: var(--color-white);
+		height: var(--header-height);
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	.header-content {
+		max-width: var(--max-width);
+		margin: 0 auto;
+		padding: 0 1rem;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.site-title {
+		font-size: 1.5rem;
+		font-weight: 700;
+	}
+
+	.nav-list {
+		display: flex;
+		gap: 1.5rem;
+		list-style: none;
+	}
+
+	.nav-link {
+		color: var(--color-white);
+		text-decoration: none;
+		font-weight: 500;
+		padding: 0.5rem;
+		transition: color 0.3s ease;
+	}
+
+	.nav-link:hover {
+		color: var(--color-accent);
+	}
+
+	.footer {
+		background: var(--color-primary);
+		color: var(--color-white);
+		padding: 1rem;
+		text-align: center;
+		margin-top: auto;
+	}
+
+	@media (max-width: 768px) {
+		.header-content {
+			flex-direction: column;
+			height: auto;
+			padding: 1rem;
+		}
+
+		.nav-list {
+			margin-top: 1rem;
+			gap: 1rem;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.header {
+			height: auto;
+		}
+	}
+</style>
