@@ -1,8 +1,9 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Check if API key exists
+// APIキーの存在確認
 const apiKey = import.meta.env.PUBLIC_GEMINI_API_KEY;
 if (!apiKey) {
+  console.error('Gemini API key is missing');
   throw new Error('Gemini API key is not set. Please set PUBLIC_GEMINI_API_KEY environment variable.');
 }
 
