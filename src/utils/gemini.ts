@@ -1,6 +1,12 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(import.meta.env.PUBLIC_GEMINI_API_KEY);
+// Check if API key exists
+const apiKey = import.meta.env.PUBLIC_GEMINI_API_KEY;
+if (!apiKey) {
+  throw new Error('Gemini API key is not set. Please set PUBLIC_GEMINI_API_KEY environment variable.');
+}
+
+const genAI = new GoogleGenerativeAI(apiKey);
 
 export async function getDetailedAdvice(
   fortuneStar: string,
@@ -67,12 +73,6 @@ export async function getDetailedAdvice(
           </ul>
         </div>
       </div>
-
-      注意事項:
-      1. 各アドバイスは具体的で実践的な内容にしてください
-      2. ポジティブな表現を心がけてください
-      3. 運命星と運気周期の特徴を考慮したアドバイスを提供してください
-      4. 抽象的な表現は避け、具体的な行動指針を示してください
     `;
 
     const result = await model.generateContent(prompt);
